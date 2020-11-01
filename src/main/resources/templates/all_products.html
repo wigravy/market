@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Products Info</title>
+</head>
+
+<body>
+    <h1>Products list:</h1>
+    <table>
+        <thead>
+        <tr>
+            <td>Id</td>
+            <td>Title</td>
+            <td>Cost</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <!--/*@thymesVar id="products" type="java.util.List<com.wigravy.market.entities.Product>"*/-->
+        <tr th:each="product : ${products}">
+            <td th:text="${product.getId()}"></td>
+            <td th:text="${product.getTitle()}"></td>
+            <td th:text="${product.getPrice()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html>
