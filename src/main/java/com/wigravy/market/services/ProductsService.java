@@ -1,8 +1,8 @@
 package com.wigravy.market.services;
 
 
-import com.wigravy.market.exceptions.ProductNotFoundException;
 import com.wigravy.market.entities.Product;
+import com.wigravy.market.exceptions.ProductNotFoundException;
 import com.wigravy.market.repositories.ProductsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,7 @@ import java.util.List;
 
 
 @Service
-public class ProductService {
+public class ProductsService {
     private ProductsRepository productsRepository;
 
     @Autowired
@@ -22,12 +22,12 @@ public class ProductService {
         this.productsRepository = productsRepository;
     }
 
-    public Product getById(Long id) {
-        return productsRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Can't find product with id = " + id));
+    public Product saveOrUpdate(Product product) {
+        return productsRepository.save(product);
     }
 
-    public Product findByTitle(String title) {
-        return productsRepository.findOneByTitle(title);
+    public Product findById(Long id) {
+        return productsRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Can't find product with id = " + id));
     }
 
     public List<Product> findAll() {
@@ -38,6 +38,6 @@ public class ProductService {
         if (page < 1) {
             page = 1;
         }
-        return productsRepository.findAll(specification, PageRequest.of(page - 1, 5));
+        return productsRepository.findAll(specification, PageRequest.of(page - 1, 10));
     }
 }
