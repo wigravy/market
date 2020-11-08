@@ -12,7 +12,7 @@
 	<artifactId>market</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>market</name>
-	<description>Geekbrains market</description>
+	<description>Market</description>
 
 	<properties>
 		<java.version>11</java.version>

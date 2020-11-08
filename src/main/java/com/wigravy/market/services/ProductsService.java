@@ -2,6 +2,7 @@ package com.wigravy.market.services;
 
 
 import com.wigravy.market.entities.Product;
+import com.wigravy.market.entities.dtos.ProductDto;
 import com.wigravy.market.exceptions.ProductNotFoundException;
 import com.wigravy.market.repositories.ProductsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Properties;
 
 
 @Service
@@ -39,5 +41,21 @@ public class ProductsService {
             page = 1;
         }
         return productsRepository.findAll(specification, PageRequest.of(page - 1, 10));
+    }
+
+    public void deleteById(Long id) {
+        productsRepository.deleteById(id);
+    }
+
+    public void deleteAll() {
+        productsRepository.deleteAll();
+    }
+
+    public boolean isExistsByID(Long id) {
+        return productsRepository.existsById(id);
+    }
+
+    public List<ProductDto> findAllDto() {
+        return productsRepository.findAllBy();
     }
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -12,17 +13,23 @@ import javax.persistence.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "title")
     private String title;
 
-    @Column
+    @Column(name = "description")
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "price")
     private Double price;
+
+    @ManyToMany
+    @JoinTable(name = "products_categories",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private List<Category> categories;
 
     public Product(String title, String description, Double price) {
         this.title = title;

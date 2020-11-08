@@ -15,7 +15,7 @@
 <div class="container">
     <div th:replace="~{navigation :: navigation(Market)}" />
 
-    <h1>Market</h1>
+    <h1 th:text="#{nav.market}"></h1>
     <form th:accept="@{'/products'}" method="get">
         <div class="form-group">
             <label>Minimum price</label>
@@ -29,11 +29,17 @@
             <label>Title like</label>
             <input th:value="${param.title != null ? param.title : ''}" class="form-control" name="title">
         </div>
+        <label>Categories</label>
+        <div class="form-check" th:each="c : ${@categoriesService.findAll()}">
+            <input type="checkbox" class="form-check-input" name="category" th:value="${c.id}">
+            <label class="form-check-label" th:text="${c.title}"></label>
+        </div>
+
         <button  type="submit" class="btn btn-primary">Apply</button>
         <a th:href="@{/products}" type="button" class="btn btn-warning">Clear</a>
     </form>
 
-    <h3>Products list:</h3>
+    <h3 th:text="#{products.list}"></h3>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -45,7 +51,6 @@
         </thead>
         <tbody>
 
-        <!--/*@thymesVar id="products" type="java.util.List<com.wigravy.market.entities.Product>"*/-->
         <tr th:each="product : ${products.getContent()}">
             <td th:text="${product.getId()}"></td>
             <td th:text="${product.getTitle()}"></td>
