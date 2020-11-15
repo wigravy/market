@@ -11,7 +11,7 @@ public class AdditionalController {
     }
 
     @GetMapping("/")
-    public String homepage() {
+    public String homePage() {
         return "index";
     }
 }

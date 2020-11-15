@@ -56,6 +56,7 @@
             <td th:text="${product.getTitle()}"></td>
             <td th:text="${product.getPrice()}"></td>
             <td th:text="${product.getDescription()}"></td>
+            <td><a th:href="@{'/cart/add/' + ${product.getId()}}">Add to cart</a></td>
             <td><a th:href="@{'/products/edit/' + ${product.getId()}}">Edit</a></td>
         </tr>
         </tbody>

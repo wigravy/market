@@ -1,4 +1,7 @@
 package com.wigravy.market.entities.dtos;
 
-public class ProductDto {
+public interface ProductDto {
+    Long getId();
+
+    String getTitle();
 }

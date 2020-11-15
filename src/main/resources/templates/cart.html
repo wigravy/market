@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="ru-RU">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Market</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div th:replace="~{navigation :: navigation(Cart)}" />
+
+    <h1 th:text="#{nav.cart}"></h1>
+
+    <hr>
+    <h3 th:text="#{cart.list}"></h3>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td th:text="#{cart.product.title}"></td>
+            <td th:text="#{cart.product.cost}"></td>
+            <td th:text="#{cart.product.count}"></td>
+            <td th:text="#{cart.product.total_price}"></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.key.getTitle()}"></td>
+            <td th:text="${product.key.getPrice()}"></td>
+            <td th:text="${product.value}"></td>
+            <td th:text="${#numbers.formatDecimal((product.key.getPrice() * product.value), 0, 'DEFAULT', 2, 'DEFAULT')}"></td>
+            <td><a th:href="@{'/cart/del/' + ${product.key.getId()}}">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -25,6 +25,9 @@
                 <li class="nav-item" th:classappend="${activeTab == 'About' ? 'active' : ''}">
                     <a class="nav-link" th:href="@{'/about'}" th:text="#{nav.about}"></a>
                 </li>
+                <li class="nav-item" th:classappend="${activeTab == 'Cart' ? 'active' : ''}">
+                    <a class="nav-link" th:href="@{'/cart'}" th:text="#{nav.cart}"></a>
+                </li>
 
                 <div class="dropdown" style="margin-left: 10px;">
                     <button class="btn btn-outline-settcondary dropdown-toggle" th:text="#{nav.lang}" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" />
