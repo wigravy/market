@@ -45,6 +45,65 @@ values ('Food'),
        ('Fruit');
 
 drop table if exists products_categories cascade;
-create table products_categories (product_id bigint not null , category_id bigint not null, primary key (product_id, category_id),
-foreign key (product_id) references products(id), foreign key (category_id) references categories(id));
-insert into products_categories (product_id, category_id) values (1, 1), (1, 3), (21, 2);
+create table products_categories
+(
+    product_id  bigint not null,
+    category_id bigint not null,
+    primary key (product_id, category_id),
+    foreign key (product_id) references products (id),
+    foreign key (category_id) references categories (id)
+);
+
+
+insert into products_categories (product_id, category_id)
+values (1, 1),
+       (1, 3),
+       (21, 2);
+
+drop table if exists users cascade;
+create table users
+(
+    id       bigserial,
+    login    varchar(255) not null unique,
+    password varchar(255) not null,
+    primary key (id)
+);
+
+-- password 100
+insert into users (login, password)
+VALUES ('admin', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i'),
+       ('user', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i'),
+       ('manager', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i');
+
+drop table if exists roles cascade;
+create table roles
+(
+    id   smallserial,
+    role varchar(255) not null unique,
+    primary key (id)
+);
+
+insert into roles (role)
+values ('ROLE_ADMIN'),
+       ('ROLE_USER'),
+       ('ROLE_MANAGER');
+
+drop table if exists users_roles cascade;
+create table users_roles
+(
+    user_id bigint   not null,
+    role_id smallint not null,
+    primary key (user_id, role_id),
+    foreign key (user_id)
+        references users (id),
+    foreign key (role_id)
+        references roles (id)
+);
+
+insert into users_roles(user_id, role_id)
+VALUES (1, 1),
+       (1, 3),
+       (2, 2),
+       (3, 2),
+       (3, 3);
+
