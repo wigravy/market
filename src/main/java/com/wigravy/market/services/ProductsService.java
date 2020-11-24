@@ -10,8 +10,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -28,33 +31,33 @@ public class ProductsService {
     }
 
     public Product findById(Long id) {
-        return productsRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Can't find product with id = " + id));
+        return productsRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Can't found product with id = " + id));
     }
 
     public List<Product> findAll() {
         return productsRepository.findAll();
     }
 
-    public Page<Product> findAll(Specification<Product> specification, Integer page) {
-        if (page < 1) {
+    public Page<Product> findAll(Specification<Product> spec, Integer page) {
+        if (page < 1L) {
             page = 1;
         }
-        return productsRepository.findAll(specification, PageRequest.of(page - 1, 10));
-    }
-
-    public void deleteById(Long id) {
-        productsRepository.deleteById(id);
+        return productsRepository.findAll(spec, PageRequest.of(page - 1, 10));
     }
 
     public void deleteAll() {
         productsRepository.deleteAll();
     }
 
-    public boolean isExistsByID(Long id) {
+    public void deleteById(Long id) {
+        productsRepository.deleteById(id);
+    }
+
+    public boolean existsById(Long id) {
         return productsRepository.existsById(id);
     }
 
-    public List<ProductDto> findAllDto() {
+    public List<ProductDto> getDtoData() {
         return productsRepository.findAllBy();
     }
 }

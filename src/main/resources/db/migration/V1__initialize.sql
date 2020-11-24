@@ -4,7 +4,7 @@ create table products
     id          bigserial,
     title       varchar(255),
     description varchar(5000),
-    price       numeric(10, 2),
+    price       numeric(8, 2),
     primary key (id)
 );
 insert into products
@@ -41,8 +41,7 @@ create table categories
 insert into categories
     (title)
 values ('Food'),
-       ('Electronic'),
-       ('Fruit');
+       ('Devices');
 
 drop table if exists products_categories cascade;
 create table products_categories
@@ -53,57 +52,79 @@ create table products_categories
     foreign key (product_id) references products (id),
     foreign key (category_id) references categories (id)
 );
-
-
 insert into products_categories (product_id, category_id)
 values (1, 1),
-       (1, 3),
-       (21, 2);
+       (2, 1),
+       (3, 1),
+       (4, 2);
 
-drop table if exists users cascade;
+drop table if exists users;
 create table users
 (
-    id       bigserial,
-    login    varchar(255) not null unique,
-    password varchar(255) not null,
-    primary key (id)
+    id         bigserial,
+    phone      VARCHAR(30) not null UNIQUE,
+    password   VARCHAR(80) not null,
+    email      VARCHAR(50) UNIQUE,
+    first_name VARCHAR(50),
+    last_name  VARCHAR(50),
+    PRIMARY KEY (id)
 );
 
--- password 100
-insert into users (login, password)
-VALUES ('admin', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i'),
-       ('user', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i'),
-       ('manager', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i');
-
-drop table if exists roles cascade;
+drop table if exists roles;
 create table roles
 (
-    id   smallserial,
-    role varchar(255) not null unique,
+    id   serial,
+    name VARCHAR(50) not null,
     primary key (id)
 );
 
-insert into roles (role)
-values ('ROLE_ADMIN'),
-       ('ROLE_USER'),
-       ('ROLE_MANAGER');
-
-drop table if exists users_roles cascade;
+drop table if exists users_roles;
 create table users_roles
 (
-    user_id bigint   not null,
-    role_id smallint not null,
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
     primary key (user_id, role_id),
-    foreign key (user_id)
-        references users (id),
-    foreign key (role_id)
-        references roles (id)
+    FOREIGN KEY (user_id)
+        REFERENCES users (id),
+    FOREIGN KEY (role_id)
+        REFERENCES roles (id)
 );
 
-insert into users_roles(user_id, role_id)
-VALUES (1, 1),
-       (1, 3),
-       (2, 2),
-       (3, 2),
-       (3, 3);
+insert into roles (name)
+values ('ROLE_CUSTOMER'),
+       ('ROLE_MANAGER'),
+       ('ROLE_ADMIN');
 
+insert into users (phone, password, first_name, last_name, email)
+values ('11111111', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'admin', 'admin',
+        'admin@gmail.com');
+
+insert into users_roles (user_id, role_id)
+values (1, 1),
+       (1, 2),
+       (1, 3);
+
+drop table if exists orders cascade;
+create table orders
+(
+    id           bigserial,
+    user_id      bigint        not null,
+    price        numeric(8, 2) not null,
+    address      varchar(255)  not null,
+    phone_number varchar(30)   not null,
+    primary key (id),
+    constraint fk_user_id foreign key (user_id) references users (id)
+);
+
+drop table if exists orders_items cascade;
+create table orders_items
+(
+    id         bigserial,
+    order_id   bigint not null,
+    product_id bigint not null,
+    quantity   int,
+    price      numeric(8, 2),
+    primary key (id),
+    constraint fk_prod_id foreign key (product_id) references products (id),
+    constraint fk_order_id foreign key (order_id) references orders (id)
+);

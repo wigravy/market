@@ -12,14 +12,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UsersService implements UserDetailsService {
     private UsersRepository usersRepository;
     private RolesRepository rolesRepository;
 
@@ -33,18 +34,19 @@ public class UserService implements UserDetailsService {
         this.rolesRepository = rolesRepository;
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole())).collect(Collectors.toList());
+    public Optional<User> findByPhone(String phone) {
+        return usersRepository.findOneByPhone(phone);
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = usersRepository.findOneByLogin(login).orElseThrow(() -> new UserNotFoundException("User with this login does not exists"));
-        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = usersRepository.findOneByPhone(username).orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
+        return new org.springframework.security.core.userdetails.User(user.getPhone(), user.getPassword(),
+                mapRolesToAuthorities(user.getRoles()));
     }
 
-    public List<User> finaAll() {
-        return usersRepository.findAll();
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
 }

@@ -1,7 +1,7 @@
 package com.wigravy.market.configs;
 
 
-import com.wigravy.market.services.UserService;
+import com.wigravy.market.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -14,25 +14,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserService userService;
+    private UsersService usersService;
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUsersService(UsersService usersService) {
+        this.usersService = usersService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/products/add/**").hasAnyRole("ADMIN", "MANAGER")
-                .antMatchers("/products/edit/**").hasAnyRole("ADMIN", "MANAGER")
-                .antMatchers("/products/**").authenticated()
-                .antMatchers("/users/**").hasAnyRole("ADMIN")
-                .antMatchers("/cart").authenticated()
+                .antMatchers("/profile/*").authenticated()
+                .antMatchers("/orders/*").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
+                .loginPage("/login")
                 .loginProcessingUrl("/authenticate")
+                .permitAll()
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
@@ -47,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);
+        auth.setUserDetailsService(usersService);
         auth.setPasswordEncoder(bCryptPasswordEncoder());
         return auth;
     }

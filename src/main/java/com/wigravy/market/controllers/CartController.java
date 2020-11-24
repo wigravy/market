@@ -2,6 +2,7 @@ package com.wigravy.market.controllers;
 
 import com.wigravy.market.components.Cart;
 import com.wigravy.market.services.ProductsService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,34 +10,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+
 @Controller
 @RequestMapping("/cart")
+@AllArgsConstructor
 public class CartController {
-    private ProductsService productService;
+    private ProductsService productsService;
     private Cart cart;
 
-    @Autowired
-    public CartController(ProductsService productService, Cart cart) {
-        this.productService = productService;
-        this.cart = cart;
-    }
-
     @GetMapping
-    public String showCart(Model model) {
-        model.addAttribute("products", cart.getProductsList());
+    public String showCartPage(Model model) {
         return "cart";
     }
 
-
-    @GetMapping("add/{id}")
-    public String addProductToCart(@PathVariable Long id) {
-        cart.addProduct(productService.findById(id));
-        return "redirect:/products";
+    @GetMapping("/add/{productId}")
+    public void addProductToCartById(@PathVariable Long productId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        cart.add(productsService.findById(productId));
+        response.sendRedirect(request.getHeader("referer"));
     }
 
-    @GetMapping("del/{id}")
-    public String deleteProductFromCart(@PathVariable Long id) {
-        cart.deleteProduct(productService.findById(id));
-        return "redirect:/cart";
+    @GetMapping("/decrement/{productId}")
+    public void decrementProductToCartById(@PathVariable Long productId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        cart.decrement(productsService.findById(productId));
+        response.sendRedirect(request.getHeader("referer"));
+    }
+
+    @GetMapping("/remove/{productId}")
+    public void removeProductFromCartById(@PathVariable Long productId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        cart.removeByProductId(productId);
+        response.sendRedirect(request.getHeader("referer"));
     }
 }
