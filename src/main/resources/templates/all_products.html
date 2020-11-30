@@ -72,17 +72,17 @@
         <ul class="pagination">
             <li class="page-item" th:classappend="${products.isFirst() ? 'disabled' : ''}">
                 <a class="page-link"
-                   th:href="@{'/products/?p='+ ${products.previousOrFirstPageable().getPageNumber() + 1} + ${filterDef}}" th:text="#{products.prev}"></a>
+                   th:href="@{'/products/?page='+ ${products.previousOrFirstPageable().getPageNumber() + 1} + ${filterDef}}" th:text="#{products.prev}"></a>
             </li>
 
             <li class="page-item" th:classappend="${products.getNumber() + 1 == i ? 'active' : ''}"
                 th:each="i : ${#numbers.sequence((products.getNumber() + 1 > 2 ? products.getNumber() - 1 : 1), (products.getNumber() + 3 < products.getTotalPages() ? products.getNumber() + 3 : products.getTotalPages()) )}">
-                <a class="page-link" th:text="${i}" th:href="@{'/products/?p=' + ${i} + ${filterDef}}"></a>
+                <a class="page-link" th:text="${i}" th:href="@{'/products/?page=' + ${i} + ${filterDef}}"></a>
             </li>
 
             <li class="page-item" th:classappend="${products.isLast() ? 'disabled' : ''}">
                 <a class="page-link"
-                   th:href="@{'/products/?p='+ ${products.nextOrLastPageable().getPageNumber() + 1} + ${filterDef}}" th:text="#{products.next}"></a>
+                   th:href="@{'/products/?page='+ ${products.nextOrLastPageable().getPageNumber() + 1} + ${filterDef}}" th:text="#{products.next}"></a>
             </li>
         </ul>
     </nav>

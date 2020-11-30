@@ -16,10 +16,8 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "password")
     private String password;
 
     @Column(name = "first_name")
@@ -28,13 +26,15 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
     private String email;
 
     @ManyToMany
-    @JoinTable(name = "users_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
     public String getFullName() {

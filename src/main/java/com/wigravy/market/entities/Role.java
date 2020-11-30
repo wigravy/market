@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -14,15 +15,16 @@ import java.util.Objects;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
     private String name;
 
     public Role(String name) {
         this.name = name;
     }
+
+    @ManyToMany(mappedBy = "roles")
+    private Collection<User> users;
 
     @Override
     public boolean equals(Object o) {

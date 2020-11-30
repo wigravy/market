@@ -73,7 +73,7 @@ public class RestProductsController {
     @ApiOperation("Modifies an existing product")
     public ResponseEntity<?> modifyProduct(@RequestBody Product product) {
         if (product.getId() == null || !productsService.existsById(product.getId())) {
-            throw new ProductNotFoundException("Product not found, id: " + product.getId());
+            return new ResponseEntity<>(new ProductNotFoundException("Product not found, id: " + product.getId()), HttpStatus.NOT_FOUND);
         }
         if (product.getPrice().doubleValue() < 0.0) {
             return new ResponseEntity<>("Product's price can not be negative", HttpStatus.BAD_REQUEST);
