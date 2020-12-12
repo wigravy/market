@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html ng-app="app" ng-controller="cartScriptCtrl" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script src="logic.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <title>Market</title>
+</head>
+<body>
+<div class="container">
+    <h3>Add new product</h3>
+    <form name="addProductForm" ng-submit="create()">
+        <input hidden type="text" ng-model="Product.id">
+        <label for="productTitle">Title</label>
+        <input id="productTitle" type="text" ng-model="Product.title" placeholder="Product title">
+        <br/>
+        <label for="productPrice">Price</label>
+        <input id="productPrice" type="text" ng-model="Product.price" placeholder="Product cost">
+        <br/>
+        <button type="submit" class="btn btn-success">submit</button>
+    </form>
+</div>
+</body>
+</html>
