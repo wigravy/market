@@ -1,7 +1,9 @@
 package com.wigravy.market.controllers;
 
 
+import com.wigravy.market.entities.Category;
 import com.wigravy.market.entities.Product;
+import com.wigravy.market.services.CategoriesService;
 import com.wigravy.market.services.ProductsService;
 import com.wigravy.market.utils.ProductFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,23 +12,32 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/products")
 public class ProductsController {
     private ProductsService productsService;
+    private CategoriesService categoriesService;
 
     @Autowired
-    public ProductsController(ProductsService productsService) {
+    public ProductsController(ProductsService productsService, CategoriesService categoriesService) {
         this.productsService = productsService;
+        this.categoriesService = categoriesService;
     }
 
     @GetMapping
     public String showProductByPage(Model model,
-                                    @RequestParam Map<String, String> requestParams) {
+                                    @RequestParam Map<String, String> requestParams,
+                                    @RequestParam(name = "category", required = false) List<Long> categoriesIds) {
         Integer pageNumber = Integer.parseInt(requestParams.getOrDefault("page", "1"));
-        ProductFilter productFilter = new ProductFilter(requestParams);
+
+        List<Category> categoriesFilter = null;
+        if (categoriesIds != null) {
+            categoriesFilter = categoriesService.findAllById(categoriesIds);
+        }
+        ProductFilter productFilter = new ProductFilter(requestParams, categoriesFilter);
         Page<Product> products = productsService.findAll(productFilter.getSpec(), pageNumber);
         model.addAttribute("products", products);
         model.addAttribute("filterDef", productFilter.getFilterDefinition().toString());
