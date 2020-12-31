@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -14,13 +15,11 @@ import java.util.List;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "title")
+    @Size(min = 4, max = 255)
     private String title;
 
-    @Column(name = "price")
     private BigDecimal price;
 
     @ManyToMany

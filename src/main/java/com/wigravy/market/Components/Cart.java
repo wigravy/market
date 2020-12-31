@@ -1,4 +1,4 @@
-package com.wigravy.market.components;
+package com.wigravy.market.Components;
 
 import com.wigravy.market.entities.OrderItem;
 import com.wigravy.market.entities.Product;

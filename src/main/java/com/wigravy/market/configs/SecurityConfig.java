@@ -1,56 +1,49 @@
 package com.wigravy.market.configs;
 
 
-import com.wigravy.market.services.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
-@Profile("thymeleaf")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserService userService;
+    private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setJwtRequestFilter(JwtRequestFilter jwtRequestFilter) {
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/profile/*").authenticated()
-                .antMatchers("/orders/*").authenticated()
+        http
+                .csrf().disable()
+                .authorizeRequests()
                 .antMatchers("/api/v1/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/authenticate")
-                .permitAll()
-                .and()
-                .logout()
-                .logoutSuccessUrl("/")
-                .permitAll();
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    @Override
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);
-        auth.setPasswordEncoder(bCryptPasswordEncoder());
-        return auth;
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 }

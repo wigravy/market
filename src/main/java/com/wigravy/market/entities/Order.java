@@ -1,6 +1,7 @@
 package com.wigravy.market.entities;
 
-import com.wigravy.market.components.Cart;
+
+import com.wigravy.market.Components.Cart;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;

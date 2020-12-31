@@ -1,69 +1,88 @@
 package com.wigravy.market.controllers;
 
-
-import com.wigravy.market.entities.Category;
 import com.wigravy.market.entities.Product;
-import com.wigravy.market.services.CategoriesService;
+import com.wigravy.market.entities.dtos.ProductDto;
+import com.wigravy.market.exceptions.ResourceNotFoundException;
 import com.wigravy.market.services.ProductsService;
-import com.wigravy.market.utils.ProductFilter;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
-@Controller
-@RequestMapping("/products")
+@RestController
+@CrossOrigin("*")
+@RequestMapping("/api/v1/products")
+@Api("Set of endpoints for CRUD operations for Products")
 public class ProductsController {
     private ProductsService productsService;
-    private CategoriesService categoriesService;
 
     @Autowired
-    public ProductsController(ProductsService productsService, CategoriesService categoriesService) {
+    public ProductsController(ProductsService productsService) {
         this.productsService = productsService;
-        this.categoriesService = categoriesService;
     }
 
-    @GetMapping
-    public String showProductByPage(Model model,
-                                    @RequestParam Map<String, String> requestParams,
-                                    @RequestParam(name = "category", required = false) List<Long> categoriesIds) {
-        Integer pageNumber = Integer.parseInt(requestParams.getOrDefault("page", "1"));
+    @GetMapping("/dto")
+    @ApiOperation("Returns list of all products data transfer objects")
+    public List<ProductDto> getAllProductsDto() {
+        return productsService.getDtoData();
+    }
 
-        List<Category> categoriesFilter = null;
-        if (categoriesIds != null) {
-            categoriesFilter = categoriesService.findAllById(categoriesIds);
+    @GetMapping(produces = "application/json")
+    @ApiOperation("Returns list of all products")
+    public List<Product> getAllProducts() {
+        return productsService.findAll();
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/json")
+    @ApiOperation("Returns one product by id")
+    public ResponseEntity<?> getOneProduct(@PathVariable @ApiParam("Id of the product to be requested. Cannot be empty") Long id) {
+        if (!productsService.existsById(id)) {
+            throw new ResourceNotFoundException("Product not found, id: " + id);
         }
-        ProductFilter productFilter = new ProductFilter(requestParams, categoriesFilter);
-        Page<Product> products = productsService.findAll(productFilter.getSpec(), pageNumber);
-        model.addAttribute("products", products);
-        model.addAttribute("filterDef", productFilter.getFilterDefinition().toString());
-        return "all_products";
+        return new ResponseEntity<>(productsService.findById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/add")
-    public String showAddForm() {
-        return "add_product_form";
+    @DeleteMapping
+    @ApiOperation("Removes all products")
+    public void deleteAllProducts() {
+        productsService.deleteAll();
     }
 
-    @PostMapping("/add")
-    public String saveNewProduct(@ModelAttribute Product product) {
-        productsService.saveOrUpdate(product);
-        return "redirect:/products";
+    @DeleteMapping("/{id}")
+    @ApiOperation("Removes one product by id")
+    public void deleteOneProducts(@PathVariable Long id) {
+        productsService.deleteById(id);
     }
 
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("product", productsService.findById(id));
-        return "edit_product_form";
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("Creates a new product")
+    public Product saveNewProduct(@RequestBody Product product) {
+        if (product.getId() != null) {
+            product.setId(null);
+        }
+        return productsService.saveOrUpdate(product);
     }
 
-    @PostMapping("/edit")
-    public String modifyProduct(@ModelAttribute Product modifiedProduct) {
-        productsService.saveOrUpdate(modifiedProduct);
-        return "redirect:/products";
+    @PutMapping(consumes = "application/json", produces = "application/json")
+    @ApiOperation("Modifies an existing product")
+    public ResponseEntity<?> modifyProduct(@RequestBody Product product) {
+        if (product.getId() == null || !productsService.existsById(product.getId())) {
+            return new ResponseEntity<>(new ResourceNotFoundException("Product not found, id: " + product.getId()), HttpStatus.NOT_FOUND);
+        }
+        if (product.getPrice().doubleValue() < 0.0) {
+            return new ResponseEntity<>("Product's price can not be negative", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(productsService.saveOrUpdate(product), HttpStatus.OK);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleException(ResourceNotFoundException exc) {
+        return new ResponseEntity<>(exc.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

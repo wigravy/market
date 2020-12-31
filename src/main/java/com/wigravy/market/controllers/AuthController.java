@@ -4,7 +4,9 @@ package com.wigravy.market.controllers;
 import com.wigravy.market.configs.JwtTokenUtil;
 import com.wigravy.market.entities.dtos.JwtRequest;
 import com.wigravy.market.entities.dtos.JwtResponse;
+import com.wigravy.market.exceptions.MarketException;
 import com.wigravy.market.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,20 +31,14 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) throws Exception {
+    public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
         try {
-            authenticate(authRequest.getUsername(), authRequest.getPassword());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         } catch (BadCredentialsException ex) {
-            throw new Exception("Incorrect username or password", ex);
+            return new ResponseEntity<>(new MarketException(HttpStatus.UNAUTHORIZED.value(), "Incorrect username or password"), HttpStatus.UNAUTHORIZED);
         }
-
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
-
         String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    private void authenticate(String username, String password) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }
