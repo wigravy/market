@@ -2,7 +2,7 @@
 
 ## Учебный проект
 
-Магазин с покупками сделанный на SpringBoot в рамках курса "Spring Framework. Part 2" на портале GeekBrains.
+Магазин с покупками сделанный на SpringBoot в рамках курса "Spring Framework. Part 1" и "Spring Framework. Part 2" на портале GeekBrains.
 
 
 **В финальной версии проекта используется:**
