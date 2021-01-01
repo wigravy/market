@@ -23,6 +23,13 @@
             .when('/cart', {
                 templateUrl: 'cart/cart.html',
                 controller: 'cartController'
+            })
+            .when('/create_order', {
+                templateUrl: 'order/create_order.html',
+                controller: 'createOrderController'
+            })
+            .when('/order_created', {
+                templateUrl: 'order/order_created.html'
             });
 
         $httpProvider.interceptors.push(function ($q, $location) {

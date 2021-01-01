@@ -34,6 +34,7 @@ public class CartController {
         return orderItemService.mapEntityListToDtoList(cart.getItems());
     }
 
+
 //    @GetMapping("/decrement/{productId}")
 //    public void decrementProductToCartById(@PathVariable Long productId, HttpServletRequest request, HttpServletResponse response) throws IOException {
 //        cart.decrement(productsService.findById(productId));

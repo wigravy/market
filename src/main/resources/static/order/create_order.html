@@ -1,0 +1,36 @@
+<div>
+    <h1>Оформление заказа:</h1>
+    <table class="table table-hover" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>Название</td>
+            <td>Цена</td>
+            <td>Количество</td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="orderItemDto in CartList">
+            <td>{{orderItemDto.productTitle}}</td>
+            <td>{{orderItemDto.price}}</td>
+            <td>{{orderItemDto.quantity}}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form>
+        <div class="form-row" ng-submit="confirmOrder()">
+            <div class="form-group col-md-6">
+                <label for="firstName">Имя:</label>
+                <input id="firstName" class="form-control" type="text" ng-model="order.firstName" placeholder='Имя получателя'>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="lastName">Фамилия:</label>
+                <input id="lastName" class="form-control" type="text" ng-model="order.lastName" placeholder='Фамилия получателя'>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address">Адрес:</label>
+            <input id="address" class="form-control" type="text" ng-model="order.address" placeholder='101000 г. Москва, Мясницкая ул, 26, кор. А кв 11'>
+        </div>
+        <button type="submit" class="btn btn-success">Подтвердить</button>
+    </form>
+
+</div>

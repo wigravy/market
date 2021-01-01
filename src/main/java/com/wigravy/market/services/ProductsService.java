@@ -3,7 +3,6 @@ package com.wigravy.market.services;
 
 import com.wigravy.market.entities.Product;
 import com.wigravy.market.entities.dtos.ProductDto;
-import com.wigravy.market.exceptions.ResourceNotFoundException;
 import com.wigravy.market.repositories.ProductsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

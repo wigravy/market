@@ -1,4 +1,4 @@
-angular.module('app').controller('cartController', function ($scope, $http) {
+angular.module('app').controller('cartController', function ($scope, $http, $location) {
     const contextPath = 'http://localhost:8189/market';
 
     fillTable = function () {
@@ -9,4 +9,9 @@ angular.module('app').controller('cartController', function ($scope, $http) {
     };
 
     fillTable();
+
+    $scope.createOrder = function () {
+        $location.path('/create_order')
+    }
+
 });

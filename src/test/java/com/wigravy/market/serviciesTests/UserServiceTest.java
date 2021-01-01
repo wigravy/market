@@ -1,8 +1,6 @@
 package com.wigravy.market.serviciesTests;
 
-import com.wigravy.market.configs.JwtRequestFilter;
-import com.wigravy.market.configs.JwtTokenUtil;
-import com.wigravy.market.controllers.AuthController;
+
 import com.wigravy.market.entities.User;
 import com.wigravy.market.repositories.UsersRepository;
 import com.wigravy.market.services.UserService;
